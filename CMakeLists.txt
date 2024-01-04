@@ -24,6 +24,6 @@ set(MainFile "src/main.cpp")
 
 add_library(${This} STATIC ${Sources} ${Headers})
 
-add_executable(main ${MainFile})
+add_executable(examples ${MainFile})
 
 add_subdirectory(test)
