@@ -9,10 +9,32 @@ namespace wad {
         std::cout << "]";
     }
 
+    // Constructors
+    WADFile::WADFile() {
+        this->reader = NULL;
+    }
 
-    WADFile::WADFile(std::string path, std::string map_name) {
-        this->reader = WADReader(path);
-        this->map_index = this->GetLumpIndex(map_name);
+    WADFile::WADFile(std::string path) {
+        this->reader = NULL;
+        this->ReadWad(path);
+    }
+
+    WADFile::WADFile(std::string path, std::string map) {
+        this->reader = NULL;
+        this->ReadWad(path);
+    }
+
+
+    // Public Functions
+    void WADFile::ReadWad(std::string path) {
+        if(this->reader != NULL) {
+            delete this->reader;
+        }
+        this->reader = new WADReader(path);
+    }
+
+    void WADFile::ReadMap(std::string map) {
+        this->map_index = this->GetLumpIndex(map);
         // Parse lumps related to the map_index
         this->things = this->ReadThingLump();
         this->linedefs = this->ReadLinedefLump();
@@ -27,30 +49,29 @@ namespace wad {
     }
 
 
+    // Lump Parsing Functions
+
     int WADFile::GetLumpIndex(std::string lump_name) {
-        for(int i=0;i<this->reader.dir.lumps.size();i++) {
-            if(this->reader.dir.lumps.at(i).lump_name == lump_name) {
+        for(int i=0;i< this->reader->dir.lumps.size();i++) {
+            if(this->reader->dir.lumps.at(i).lump_name == lump_name) {
                 return i;
             }
         }
         return -1;
     }
 
-
-    // Lump Parsing Functions
-
     std::vector<THING> WADFile::ReadThingLump() {
         int lump_index = this->map_index + LUMP_INDICIES::THINGS;
         int num_bytes = 10;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<THING> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            THING curr_data = this->reader.ReadThing(offset);
+            THING curr_data = this->reader->ReadThing(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -61,14 +82,14 @@ namespace wad {
         int num_bytes = 14;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps.at(lump_index);
+        WADLump lump_info = this->reader->dir.lumps.at(lump_index);
         int count = lump_info.lump_size / num_bytes;
 
         std::vector<LINEDEF> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            LINEDEF curr_data = this->reader.ReadLinedef(offset);
+            LINEDEF curr_data = this->reader->ReadLinedef(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -79,14 +100,14 @@ namespace wad {
         int num_bytes = 30;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps.at(lump_index);
+        WADLump lump_info = this->reader->dir.lumps.at(lump_index);
         int count = lump_info.lump_size / num_bytes;
 
         std::vector<SIDEDEF> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            SIDEDEF curr_data = this->reader.ReadSidedef(offset);
+            SIDEDEF curr_data = this->reader->ReadSidedef(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -97,14 +118,14 @@ namespace wad {
         int num_bytes = 4;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps.at(lump_index);
+        WADLump lump_info = this->reader->dir.lumps.at(lump_index);
         int count = lump_info.lump_size / num_bytes;
         
         std::vector<VERTEX> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            VERTEX curr_data = this->reader.ReadVertex(offset);
+            VERTEX curr_data = this->reader->ReadVertex(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -115,13 +136,13 @@ namespace wad {
         int num_bytes = 12;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<SEG> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            SEG curr_data = this->reader.ReadSeg(offset);
+            SEG curr_data = this->reader->ReadSeg(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -133,13 +154,13 @@ namespace wad {
         int num_bytes = 4;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<SUBSECTOR> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            SUBSECTOR curr_data = this->reader.ReadSubsector(offset);
+            SUBSECTOR curr_data = this->reader->ReadSubsector(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -151,13 +172,13 @@ namespace wad {
         int num_bytes = 28;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<NODE> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            NODE curr_data = this->reader.ReadNode(offset);
+            NODE curr_data = this->reader->ReadNode(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -168,13 +189,13 @@ namespace wad {
         int num_bytes = 26;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<SECTOR> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            SECTOR curr_data = this->reader.ReadSector(offset);
+            SECTOR curr_data = this->reader->ReadSector(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -185,13 +206,13 @@ namespace wad {
         int num_bytes = 4;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<REJECT> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            REJECT curr_data = this->reader.ReadReject(offset);
+            REJECT curr_data = this->reader->ReadReject(offset);
             data.push_back(curr_data);
         }
         return data;
@@ -202,13 +223,13 @@ namespace wad {
         int num_bytes = 4;
         int header_length = 0;
 
-        WADLump lump_info = this->reader.dir.lumps[lump_index];
+        WADLump lump_info = this->reader->dir.lumps[lump_index];
         int count = lump_info.lump_size / num_bytes;
         std::vector<BLOCKMAP> data;
         int offset = 0;
         for(int i = 0; i < count; i++) {
             offset = lump_info.lump_pos + i * num_bytes + header_length;
-            BLOCKMAP curr_data = this->reader.ReadBlockmap(offset);
+            BLOCKMAP curr_data = this->reader->ReadBlockmap(offset);
             data.push_back(curr_data);
         }
         return data;

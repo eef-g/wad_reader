@@ -40,6 +40,7 @@ namespace wad {
         WADHeader header;
         WADDir dir;
         WADReader() {};
+        ~WADReader() {};
         WADReader(std::string wad_path);
         
         int32_t BytesToInt(std::vector<unsigned char> bytes);

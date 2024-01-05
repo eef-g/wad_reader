@@ -20,10 +20,12 @@ file(GLOB Sources
     "src/wad/*.cpp"
 )
 
+set(wadFile "doom1.wad")
 set(MainFile "src/main.cpp")
-
+configure_file(${wadFile} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 add_library(${This} STATIC ${Sources} ${Headers})
 
 add_executable(examples ${MainFile})
 
 add_subdirectory(test)
+configure_file(${wadFile} ${CMAKE_CURRENT_BINARY_DIR}/test COPYONLY)

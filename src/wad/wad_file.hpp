@@ -6,7 +6,7 @@
 namespace wad {
     class WADFile {
     private:
-        WADReader reader;
+        WADReader *reader;
         int map_index;
         // Lump Data
         std::vector<THING> things;
@@ -34,8 +34,22 @@ namespace wad {
         std::vector<BLOCKMAP> ReadBlockmapLump();
 
     public:
-        WADFile() {};
-        WADFile(std::string path, std::string map_name);
+        // Default Constructor
+        WADFile();
+
+        // Specific Constructors
+        WADFile(std::string path);
+        WADFile(std::string path, std::string map);
+
+        // Deconstructor
+        ~WADFile() {
+            delete this->reader;
+        };
+        // Public Functions
+        void ReadWad(std::string path);
+        void ReadMap(std::string map);
+
+        // Getters
         std::vector<VERTEX> GetVertexes() { return this->vertexes; };
         std::vector<LINEDEF> GetLinedefs() { return this->linedefs; };
         std::vector<THING> GetThings() { return this->things; };
