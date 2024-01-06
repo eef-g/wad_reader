@@ -15,3 +15,8 @@ reset:
 setup:
 	git submodule update --init --recursive
 	mkdir build
+
+release: reset build
+	if not exist release mkdir release
+	if exist release\libwad.a del release\libwad.a
+	copy build\libwad.a release\libwad.a
