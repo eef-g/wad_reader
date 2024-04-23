@@ -21,12 +21,14 @@ jobs:
       - name: Check if commit message contains 'Release'
         run: |
           COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.after }})
+          echo $COMMIT_MESSAGE
           if [[ "${COMMIT_MESSAGE}" != *"Release" ]]; then
             echo "Commit message does not contain 'Release'. Skipping workflow..."
           exit 1
           fi
 
   build:
+    needs: check_commit
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
