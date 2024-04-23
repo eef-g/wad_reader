@@ -39,9 +39,9 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: make setup
     - name: Release
+      working-directory: ${{ github.workspace }}
       run: make release
     - name: Archive production artifacts
-      working-directory: ${{ github.workspace }}
       uses: actions/upload-artifact@v2
       with:
         name: release-${{ matrix.os }}
