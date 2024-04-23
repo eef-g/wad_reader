@@ -42,7 +42,7 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: |
         ls
-        make release
+        make release-gh
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
