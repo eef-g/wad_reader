@@ -1,10 +1,3 @@
-// This test file is a collection of unit tests to ensure that the WADFile class
-// is working as intended. To get the test values, the doom1.wad file is used.
-// The map E1M1 is used for the tests. The values that are tested are the first
-// values of each lump, and the size of each lump. The first values of each lump
-// were cross-referenced with the values in the Doom Wiki & from the Doom level
-// editor tool -- SLADE.
-
 /* This is a test file to help debug the WADReader class.
  * At the moment, when the program is run on a UNIX system
  * it will crash when reading the Linedefs of a map in a WAD file.

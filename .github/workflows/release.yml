@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  check_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if commit message contains 'Release'
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.after }})
+          if [[ "${COMMIT_MESSAGE}" != *"Release" ]]; then
+            echo "Commit message does not contain 'Release'. Skipping workflow..."
+          exit 1
+          fi
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: make setup
+    - name: Release
+      run: make release
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-${{ matrix.os }}
+        path: |
+          release/libwad.a
