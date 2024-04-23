@@ -34,13 +34,14 @@ setup:
 
 release: reset build
 ifeq ($(OS), Linux) 
-	if [ ! -d "release" ]; then mkdir release; fi
-	if [ -d "release/libwad.a"]; then rm release/libwad.a; fi
-	cp build/libwad.a release/libwad.a
+	if [ ! -d "release" ]; then mkdir release && mkdir release/Linux; fi
+	if [ -d "release/Linux/libwad.a" ]; then rm release/Linux/libwad.a; fi
+	cp build/libwad.a release/Linux/libwad.a
 else
 	if not exist release mkdir release
-	if exist release\libwad.a del release\libwad.a
-	copy build\libwad.a release\libwad.a
+	if not exist release\Windows mkdir release\Windows
+	if exist release\Windows\libwad.a del release\Windows\libwad.a
+	copy build\libwad.a release\Windows\libwad.a
 endif
 
 debug:
