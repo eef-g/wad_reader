@@ -54,7 +54,7 @@ ifeq ($(OS), Linux)
 	cd build && cmake .. -G "Unix Makefiles"
 	cd build && make
 else
-	cd ${GITHUB_WORKSPACE}\build & cmake .. -G "MinGW Makefiles"
+	cd ${GITHUB_WORKSPACE}\build & cmake .
 	cd ${GITHUB_WORKSPACE}\build && make
 endif
 
