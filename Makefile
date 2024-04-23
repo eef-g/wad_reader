@@ -21,18 +21,15 @@ endif
 
 reset:
 ifeq ($(OS), Linux) 
-	if [ ! -d "vendor/googletest" ]; then make setup; fi
 	if [ -d "build" ]; then rm -rf build; fi
 else
-	if not exist vendor/googletest make setup
 	if exist build rd /s /q build
 endif
 
 setup:
 	git submodule update --init --recursive
-	mkdir build
 
-release: reset build
+release: build
 ifeq ($(OS), Linux) 
 	if [ ! -d "release" ]; then mkdir release && mkdir release/Linux; fi
 	if [ -d "release/Linux/libwad.a" ]; then rm release/Linux/libwad.a; fi
